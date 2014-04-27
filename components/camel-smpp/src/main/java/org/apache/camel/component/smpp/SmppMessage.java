@@ -27,6 +27,8 @@ import org.jsmpp.bean.Command;
 import org.jsmpp.bean.DataSm;
 import org.jsmpp.bean.DeliverSm;
 import org.jsmpp.bean.MessageRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents a {@link org.apache.camel.Message} for working with SMPP
@@ -35,6 +37,8 @@ public class SmppMessage extends DefaultMessage {
 
     private Command command;
     private SmppConfiguration configuration;
+    
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
     
     public SmppMessage(SmppConfiguration configuration) {
         this.configuration = configuration;
@@ -95,8 +99,9 @@ public class SmppMessage extends DefaultMessage {
             try {
                 return new String(shortMessage, encoding);
             } catch (UnsupportedEncodingException e) {
-                return new String(shortMessage);
+                log.info("Unsupported encoding \"{}\". Using short message as body.", encoding);
             }
+            return new String(shortMessage);
         }
 
         return null;

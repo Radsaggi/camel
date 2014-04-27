@@ -17,6 +17,7 @@
 package org.apache.camel.component.smpp;
 
 import java.net.URI;
+import java.nio.charset.Charset;
 
 import org.apache.camel.RuntimeCamelException;
 import org.jsmpp.bean.Alphabet;
@@ -25,6 +26,8 @@ import org.jsmpp.bean.ReplaceIfPresentFlag;
 import org.jsmpp.bean.SMSCDeliveryReceipt;
 import org.jsmpp.bean.TypeOfNumber;
 import org.jsmpp.session.SessionStateListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Contains the SMPP component configuration properties</a>
@@ -66,6 +69,8 @@ public class SmppConfiguration implements Cloneable {
     private String httpProxyUsername;
     private String httpProxyPassword;
     private SessionStateListener sessionStateListener;
+
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     /**
      * A POJO which contains all necessary configuration parameters for the SMPP connection
@@ -138,6 +143,9 @@ public class SmppConfiguration implements Cloneable {
     }
 
     public void setEncoding(String encoding) {
+        if (!Charset.isSupported(encoding)) {
+            log.warn("Unsupported encoding \"{}\" is being set.", encoding);
+        }
         this.encoding = encoding;
     }
 
